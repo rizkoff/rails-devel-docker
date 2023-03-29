@@ -18,6 +18,8 @@ bundle
 rails -T
 rails webpacker:install
 
+rails new thetest --skip-action-mailer --skip-action-mailbox --skip-action-text  --skip-action-cable --skip-sprockets --skip-spring --skip-turbolinks --skip-jbuilder --skip-test --skip-system-test --webpacker
+
 [@host]
 docker cp rails:/usr/local/bundle ./v/usr-local-bundle
 docker cp rails:/usr/local/share ./v/usr-local-share
