@@ -1,0 +1,45 @@
+
+
+
+
+docker build -t rails:117 .
+docker run --rm -it -d \
+  --name rails --hostname rails \
+  -v $(pwd)/v/prj:/home/devel/prj \
+  -v $(pwd)/v/usr-local-bundle:/usr/local/bundle \
+  -v $(pwd)/v/usr-local-share:/usr/local/share \
+  -p 3003:3000 \
+     rails:117 bash
+
+
+docker exec -it rails bash
+
+bundle
+rails -T
+rails webpacker:install
+
+[@host]
+docker cp rails:/usr/local/bundle ./v/usr-local-bundle
+docker cp rails:/usr/local/share ./v/usr-local-share
+sudo chown -R root:root ./v/usr-local-share/*
+[]
+
+cd thetest
+rails s -b 0.0.0.0
+
+[@host]
+docker exec -it rails bash -c 'cd thetest; rails s -b 0.0.0.0'
+
+docker inspect rails | grep -i ipaddr
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.3",
+                    "IPAddress": "172.17.0.3",
+
+nc -vzw1 172.17.0.3 3000
+Connection to 172.17.0.3 3000 port [tcp/*] succeeded!
+
+nc -vzw1 `hostname` 3003
+Connection to XXXXXXX 3003 port [tcp/*] succeeded!
+[]
+
+
